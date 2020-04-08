@@ -1,0 +1,47 @@
+# Améliorations complémentaires à ajouter :
+
+
+###
+# Une variable pourrait être passée directement en paramètre pour le root directory :
+CMS_ROOT=$1 # <-- CMS root directory
+$1 need to be replace with the path to the CMS root directory, or, is it obtained otherwise ?
+Just use it like "fix-apache-permissions.sh /var/www/your-site-folder"
+
+# alert if no parameters 
+if [[ $# -eq 0 ]] ;
+then echo 'Error. You need to spacify folder, example: ./fix-wordpress-permissions.sh public_html' exit 0 fi 
+
+Look :
+$1 is the first command line argument given to your program (see : https://stackoverflow.com/questions/29258603/what-do-0-1-2-mean-in-shell-script).
+As said by https://gist.github.com/Adirael/3383404#gistcomment-3133780, if you want the script to point to your wordpress folder, you have to call it with, as first argument, a string that contains the path to your wordpress folder.
+
+
+###
+# Ce script prend donne les fichiers sensibles de WordPress à l'utilisateur root :
+https://gist.github.com/Adirael/3383404
+
+Look :
+chmod +x fix-wordpress-permissions.sh (gives execute permissions)
+sudo sh ./fix-wordpress-permissions.sh /home/admin/web/yourwebsite-goes-here/public_html (use this command to execute).
+
+
+###
+# Wouldn't it be faster to use ?
+chown -R ${WP_OWNER}:${WP_GROUP} ${WP_ROOT}
+# instead of
+find ${WP_ROOT} -exec chown ${WP_OWNER}:${WP_GROUP} {} \;
+
+
+### 
+# if the .sh file is in root directory
+sudo sh ./fix-wordpress-permissions.sh ./
+
+
+###
+# Improvements
+With validation of input parameter: https://gist.github.com/kyleskrinak/3f78dff0ab8526c2cf20
+With confirm questions to continue: https://gist.github.com/blizzrdof77/f35dc9fd404414ba0f97066e747219d2
+https://github.com/rubo77/fix-wordpress-permissions.sh/blob/master/fix-wordpress-permissions.sh
+
+
+# Une fois les améliorations prises en compte, proposer le script à la suite de la discussion : https://gist.github.com/Adirael/3383404
