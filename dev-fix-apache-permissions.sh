@@ -1,68 +1,31 @@
 #!/bin/sh
-##################################################################
-# Ce programme modifie les droits CHOWN et CHMOD sur un site web #
-#        Script de Zer00CooL pour https://lecannabiste.fr        #
-#                 Développé pour Debian - Ubuntu                 #
-##################################################################
-
-##########################################
-# Ce script permet d'optimiser les CHMOD #
-##########################################
-### Commun à tous les sites internet ###
-# Tous les CHMOD d'un site avec les valeurs par défaut recommandées.
-# Le CHMOD des fichiers index.php index.htm index.html
-# Le CHMOD des fichiers .htaccess*
-### Propre à certains CMS ###
-# Le CHMOD du fichier configuration.php
-# Le CHMOD du fichier LocalSettings.php
-# Le CHMOD du fichier wp-config.php
-###############################
-
-#########################################
-# Script optimisé pour les CMS suivants #
-#########################################
-# Joomla
-# Mediawiki
-# WordPress
-#####################################
-
-###############################
-# Tester le script localement #
-###############################
-## Créer le script et copier coller le contenu de cette page :
-# touch chmod.sh
-# 
-## Créer un dossier "site" :
-# mkdir site
-#
-## Se placer dans le dossier "site" et ajouter les dossiers et les fichiers suivants :
-# cd site/
-# mkdir dossier
-# touch configuration.php LocalSettings.php wp-config.php exemple index.php index.htm index.html .htaccess .htaccess.old.bak
-# touch dossier/index.php
-# Donner les droits 777 à vos fichiers. Il ne faut jamais utiliser 777 sur un serveur web. Le script va modifier les CHMOD 777 par les CHMOD recommandés.
-# chmod 777 configuration.php LocalSettings.php wp-config.php exemple index.php index.htm index.html .htaccess .htaccess.old.bak
-# chmod 777 -R dossier/
-#
-## Lancer le script :
-# sudo sh chmod.sh
-###############################
+#######################################################################################
+# Ce programme modifie les droits CHOWN et CHMOD sur un site web hébergé sous Apache2 #
+#                  Script de Zer00CooL pour https://lecannabiste.fr                   #
+#                           Développé sous Debian - Ubuntu                            #
+#######################################################################################
 
 # L'écran existant est vidé.
 clear;
-
 echo "##################################################################";
 sleep 1;
 echo "# Ce programme modifie les droits CHOWN et CHMOD sur un site web #";
 sleep 2;
 echo "#        Script de Zer00CooL pour https://lecannabiste.fr        #";
 sleep 2;
-echo "#                 Développé pour Debian - Ubuntu                 #";
+echo "#                 Développé sous Debian - Ubuntu                 #";
 sleep 2;
 echo "##################################################################";
 sleep 4;
 echo "";
 
+
+# A faire :
+# Récupérer la variable de l'emplacement du site donné en paramètre
+# sudo sh fix-apache-permissions.sh /var/www/dossier_du_site_pour_lequel_verifier_les_permissions/
+
+
+# L'écran existant est vidé.
 clear;
 echo "#########################################################";
 sleep 1;
@@ -71,7 +34,7 @@ sleep 2;
 echo "#########################################################";
 sleep 2;
 echo "";
-echo "Exemple : /var/www/le_dossier_du_site_pour_verifier_les_chmod/";
+echo "Exemple : /var/www/dossier_du_site_pour_lequel_verifier_les_permissions/";
 sleep 2;
 echo "";
 echo "À votre tour :";
@@ -84,9 +47,10 @@ echo "";
         echo "Erreur ! Le programme a été arrêté.";
         echo "Le chemin du site n'a pas été renseigné.";
         echo "Relancer le programme avec un emplacement valide pour le site a configurer.";
+        sleep 4;
         exit;
     else
-        echo "Ce dossier a été renseigné comme contenant le site :";
+        echo "Le dossier renseigné comme contenant le site est le suivant :";
         echo "$chemin_site";
 
     fi
@@ -94,6 +58,7 @@ sleep 2;
 echo "";
 
 
+# L'écran existant est vidé.
 clear;
 # Vérifier si le dossier du site existe.
 # Cette vérification n'est pas affichée car le sleep est commenté.
@@ -112,13 +77,12 @@ then
     then
         echo "Positionnement dans le dossier du site réussi.";
         sleep 2;
-        # echo "Les CHMOD des dossiers et fichiers seront modifiés dans le site suivant :";
-        # pwd;
-        # sleep 4;
-        
+        echo "Les CHMOD des dossiers et fichiers seront modifiés dans le site suivant :";
+        pwd;
+        sleep 2;
     else
         echo "Erreur ! Le programme a été arrêté.";
-        echo "Le dossier du site $chemin_site n'existe pas.";
+        echo "Le positionnement dans le dossier du site $chemin_site a échoué.";
         echo "Relancer le programme avec l'emplacement valide du site a configurer.";
         sleep 4;
         exit;
@@ -134,6 +98,7 @@ else
 fi
 
 
+# L'écran existant est vidé.
 clear;
 # Confirmer la poursuite du programme pour changer les CHMOD :
 echo "################################################################";
@@ -152,17 +117,16 @@ echo "";
 echo "Chaque proposition de changement de droits pourra être acceptée ou refusée.";
 sleep 2;
 echo "";
-echo "Appuyer sur 'o' pour continuer.";
+echo "Appuyer sur 'o' ou 'O' pour continuer.";
 echo "Toute autre touche arrête le programme sans modifier les droits.";
 read -r answer
 sleep 1;
 
+    ##############################################
+    # Début du programme pour changer les CHMOD. #
+    ############################################## 
     if [ "$answer" != "${answer#[Oo]}" ] ;
     then
-        ##############################################
-        # Début du programme pour changer les CHMOD. #
-        ############################################## 
-
         clear;
         echo "#################################################################";
         sleep 1;
@@ -194,7 +158,7 @@ sleep 1;
         echo "Sélectionner le CMS a utiliser :";
         read -r cms;
 
-        # Test avec clear.
+        # L'écran existant est vidé.
         clear;
         case $cms in
             1|j|J)
@@ -218,13 +182,14 @@ sleep 1;
             # Fin du choix spécifique à WordPress ;;
             ;;
 
-            #z|Z)
-            # Exemple pour ajouter une nouvelle entrée au menu de choix des CMS :
+            ## Début pour ajouter une nouvelle entrée au menu de choix des CMS.
+            # z|Z)
             #    echo "Le CMS sélectionné est Autre CMS";
             #    sleep 2;
             #    echo "";
-            # Fin du choix spécifique à Autre CMS ;;
+            # # Fin du choix spécifique à "Nom du CMS" ;;
             # ;;
+            ## Fin pour ajouter une nouvelle entrée au menu de choix des CMS.
 
             *)
                 sleep 2;
@@ -239,14 +204,21 @@ sleep 1;
 
 ######
 
-        # Appliquer la modification de CHMOD pour le ou les CMS identifié :
+# Début des différentes configuration de CHOWN et CHMOD pour le CMS identifié.
+# Les étapes entre ###### sont effectuées à la suite l'une de l'autre.
+
+# Le choix du CMS a configurer a été effectué précédemment.
+# Le test conditionnel détermine si la configuration doit être effectuée.
+# "1" | "j" | "J" | "2" | "m" | "M" | "3" | "w" | "W")
+
+######
+
+        # Définir le CHOWN des fichiers du site :
         case $cms in
             "1" | "j" | "J" | "2" | "m" | "M" | "3" | "w" | "W")
-                #echo "La condition vaut pour tous les CMS.";
-                
-                
-                
-                # Appliquer le CHOWN recommandé aux fichiers du site :
+                # echo "Cette condition vaut pour tous les CMS.";
+
+                # L'écran existant est vidé.
                 clear
                 echo "######################################################";
                 sleep 1;
@@ -344,7 +316,7 @@ sleep 1;
 
 ######
 
-        # Appliquer la modification de CHMOD pour le ou les CMS identifié :
+        # Appliquer la modification de CHMOD pour le CMS identifié :
         case $cms in
             "1" | "j" | "J" | "2" | "m" | "M" | "3" | "w" | "W")
                 # echo "La condition vaut pour tous les CMS.";
@@ -387,7 +359,7 @@ sleep 1;
         
 ######
 
-        # Appliquer la modification de CHMOD pour le ou les CMS identifié :
+        # Appliquer la modification de CHMOD pour le CMS identifié :
         case $cms in
             "3" | "w" | "W")
                 # echo "La condition vaut pour WordPress.";
@@ -480,7 +452,7 @@ sleep 1;
         
 ######
 
-        # Appliquer la modification de CHMOD pour le ou les CMS identifié :
+        # Appliquer la modification de CHMOD pour le CMS identifié :
         case $cms in
             "1" | "j" | "J")
                 # echo "La condition vaut pour Joomla.";
@@ -573,7 +545,7 @@ sleep 1;
 
 ######
 
-        # Appliquer la modification de CHMOD pour le ou les CMS identifié :
+        # Appliquer la modification de CHMOD pour le CMS identifié :
         case $cms in
             "2" | "m" | "M")
                 # echo "La condition vaut pour Mediawiki.";
@@ -667,7 +639,7 @@ sleep 1;
         
 ######
         
-        # Appliquer la modification de CHMOD pour le ou les CMS identifié :
+        # Appliquer la modification de CHMOD pour le CMS identifié :
         case $cms in
             "1" | "j" | "J" | "2" | "m" | "M" | "3" | "w" | "W")
                 # echo "La condition vaut pour tous les CMS.";
@@ -741,7 +713,7 @@ sleep 1;
         
 ######
         
-        # Appliquer la modification de CHMOD pour le ou les CMS identifié :
+        # Appliquer la modification de CHMOD pour le CMS identifié :
         case $cms in
             "1" | "j" | "J" | "2" | "m" | "M" | "3" | "w" | "W")
                 # echo "La condition vaut pour tous les CMS.";
@@ -821,7 +793,7 @@ sleep 1;
 
         # Ajouter une modification de CHMOD :
         
-        # Appliquer la modification de CHMOD pour le ou les CMS identifié :
+        # Appliquer la modification de CHMOD pour le CMS identifié :
         # case $cms in
         #    "1" | "j" | "J" | "3" | "w" | "W")
         #        # echo "La condition vaut pour Joomla et WordPress";
@@ -869,6 +841,9 @@ sleep 1;
         echo "Le programme c'est terminé normalement.";
         exit;
 
+    ############################################
+    # Fin du programme pour changer les CHMOD. #
+    ############################################ 
     # La confirmation pour lancer le programme pour changer les CHMOD a été refusée.
     else
         sleep 1;

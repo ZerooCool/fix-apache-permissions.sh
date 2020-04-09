@@ -44,4 +44,8 @@ With confirm questions to continue: https://gist.github.com/blizzrdof77/f35dc9fd
 https://github.com/rubo77/fix-wordpress-permissions.sh/blob/master/fix-wordpress-permissions.sh
 
 
+# Sécuriser les dossiers des images
+# Sur le modèle de Mediawiki : https://wiki.visionduweb.fr/index.php?title=Maintenance_et_securite_de_Mediawiki#Prot.C3.A9ger_le_dossier_images
+
+
 # Une fois les améliorations prises en compte, proposer le script à la suite de la discussion : https://gist.github.com/Adirael/3383404
