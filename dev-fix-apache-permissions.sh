@@ -10,13 +10,13 @@ clear;
 echo "##################################################################";
 sleep 1;
 echo "# Ce programme modifie les droits CHOWN et CHMOD sur un site web #";
-sleep 2;
+sleep 1;
 echo "#        Script de Zer00CooL pour https://lecannabiste.fr        #";
-sleep 2;
+sleep 1;
 echo "#                 Développé sous Debian - Ubuntu                 #";
-sleep 2;
+sleep 1;
 echo "##################################################################";
-sleep 4;
+sleep 2;
 echo "";
 
 
@@ -30,11 +30,17 @@ clear;
 echo "#########################################################";
 sleep 1;
 echo "# Saisir le chemin complet du dossier contenant le site #";
-sleep 2;
+sleep 1;
 echo "#########################################################";
-sleep 2;
+sleep 1;
 echo "";
-echo "Exemple : /var/www/dossier_du_site_pour_lequel_verifier_les_permissions/";
+echo "Exemple pour un chemin absolu :";
+echo "Le script est placé quelque part sur la machine ?";
+echo "/var/www/dossier_du_site_pour_lequel_verifier_les_permissions/";
+echo "";
+echo "Exemple pour un chemin relatif :";
+echo "Le script est placé dans le répertoire /var/www/ ?";
+echo "./dossier_du_site_pour_lequel_verifier_les_permissions/";
 sleep 2;
 echo "";
 echo "À votre tour :";
@@ -104,9 +110,9 @@ clear;
 echo "################################################################";
 sleep 1;
 echo "# Autoriser le programme à poursuivre pour modifier les droits #";
-sleep 2;
+sleep 1;
 echo "################################################################";
-sleep 2;
+sleep 1;
 echo "";
 
 echo "Les droits des dossiers et fichiers seront modifiés dans le site suivant :";
@@ -131,15 +137,15 @@ sleep 1;
         echo "#################################################################";
         sleep 1;
         echo "# Choix du CMS sur lequel appliquer les modifications de droits #";
-        sleep 2;
+        sleep 1;
         echo "#################################################################";
-        sleep 2;
+        sleep 1;
         echo "";
 
         # Choix spécifique pour le CMS à modifier :
-        echo "Appuyer sur '1' ou 'j' pour modifier les CHMOD de Joomla.";
-        echo "Appuyer sur '2' ou 'm' pour modifier les CHMOD de Mediawiki.";
-        echo "Appuyer sur '3' ou 'w' pour modifier les CHMOD de WordPress.";
+        echo "Appuyer sur '1' ou 'j' ou 'J' pour modifier les CHMOD de Joomla.";
+        echo "Appuyer sur '2' ou 'm' ou 'M' pour modifier les CHMOD de Mediawiki.";
+        echo "Appuyer sur '3' ou 'w' ou 'W' pour modifier les CHMOD de WordPress.";
         echo "Toute autre touche arrête le programme sans modifier les CHMOD.";
         # Exemple pour ajouter une entrée dans le menu.
         # echo "Appuyer sur "z" pour modifier les CHMOD de Autre CMS.";
@@ -223,19 +229,20 @@ sleep 1;
                 echo "######################################################";
                 sleep 1;
                 echo "# Appliquer le CHOWN recommandé aux fichiers du site #";
-                sleep 2;
+                sleep 1;
                 echo "######################################################";
-                sleep 2;
+                sleep 1;
                 echo "";
                 echo "Il est important de donner les fichiers au bon propriétaire et groupe.";
                 sleep 2
                 echo "";
                 echo "Appuyer sur 'o' pour sélectionner le CHOWN a appliquer.";
                 echo "Toute autre touche ignore cette étape pour passer à l'étape suivante.";
+                echo "Aucune modification des droits CHOWN ne sera effectuée !";
                 read -r answer;
                     if [ "$answer" != "${answer#[Oo]}" ];
                     then
-                
+
                         echo "";
                         echo "Saisir le propriétaire des fichiers du site sur le serveur.";
                         echo "On utilisera généralement la valeur 'www-data', sans les simples quotes.";
@@ -253,17 +260,21 @@ sleep 1;
                         echo "On utilisera généralement la valeur 'www-data', sans les simples quotes.";
                         echo "À votre tour :";
                         read -r wsgroup;
-                        
+
                         # Afficher le chemin absolu du site :
                             chemin_du_site() {
                                 pwd;
                             }
                         # echo "La position du site sur le serveur : $(chemin_du_site)";
 
-                        WP_OWNER="$wpowner"; # Propriétaire des fichiers WordPress.
-                        WP_GROUP="$wpgroup"; # Groupe WordPress.
-                        WP_ROOT="$(chemin_du_site)"; # Emplacement du site WordPress.
-                        WS_GROUP="$wsgroup"; # Groupe du serveur Apache2.
+                        # Propriétaire des fichiers WordPress.
+                        WP_OWNER="$wpowner";
+                        # Groupe WordPress.
+                        WP_GROUP="$wpgroup";
+                        # Emplacement du site WordPress.
+                        WP_ROOT="$(chemin_du_site)";
+                        # Groupe du serveur Apache2. 
+                        WS_GROUP="$wsgroup";
 
                         # Remise à zéro des droits de propriété des fichiers :
                         echo "";
@@ -272,7 +283,7 @@ sleep 1;
                         echo "OK.";
                         echo "Il faudra encore ajouter un test pour vérifier si la requête est réalisée !";
                         echo "Vérifier l'existance du dossier, ou, que le script a été lancé avec sudo !";
-                        
+
                         # Autoriser WordPress a modifier wp-config.php :
                         echo "";
                         echo "2- Autoriser WordPress a modifier wp-config.php :";
@@ -308,11 +319,11 @@ sleep 1;
 ######
 
         # Ajouter un changement de propriétaire pour le dossier .git et le fichier .gitignore
-        
-        #Je relance la question sur les droits @Tchoupinax , tu me disais, Les fichiers gits appartient à celui qui les a CLONÉ.
-#Mais, en l’occurrence, lorsque je clone le projet Git dans /var/www/ il me faut les droits sudo pour y écrire, donc, à qui appartient le dossier .git ?
-#A mon utilisateur monuser:monuser ou root:root
-#Ha bah non, je me répond, si je ne dis pas de bêtise, je dois faire un chown monuser:monuser et la, je peux lancer les commit, sans avoir besoin de sudo, et, je m'identifie avec mon compte utilisateur créé sur Gitea.
+
+        # Je relance la question sur les droits @Tchoupinax , tu me disais, Les fichiers gits appartient à celui qui les a CLONÉ.
+# Mais, en l’occurrence, lorsque je clone le projet Git dans /var/www/ il me faut les droits sudo pour y écrire, donc, à qui appartient le dossier .git ?
+# A mon utilisateur monuser:monuser ou root:root
+# Ha bah non, je me répond, si je ne dis pas de bêtise, je dois faire un chown monuser:monuser et la, je peux lancer les commit, sans avoir besoin de sudo, et, je m'identifie avec mon compte utilisateur créé sur Gitea.
 
 ######
 
@@ -326,9 +337,9 @@ sleep 1;
                 echo "#######################################################";
                 sleep 1;
                 echo "# Appliquer les valeurs CHMOD recommandées par défaut #"
-                sleep 2;
+                sleep 1;
                 echo "#######################################################";
-                sleep 2;
+                sleep 1;
                 echo "";
                 echo "Il est conseillé d'utiliser le CHMOD 755 pour tous les dossiers."
                 sleep 2;
@@ -356,7 +367,7 @@ sleep 1;
             ;;
         # Fin de la modification.
         esac
-        
+
 ######
 
         # Appliquer la modification de CHMOD pour le CMS identifié :
@@ -369,9 +380,9 @@ sleep 1;
                 echo "##########################################################";
                 sleep 1;
                 echo "# Appliquer le CHMOD recommandé au fichier wp-config.php #"
-                sleep 2;
+                sleep 1;
                 echo "##########################################################";
-                sleep 2;
+                sleep 1;
                 echo "";
                 echo "Utiliser 640 est cohérent, 440 ou 400 permet une sécurité plus poussée.";
                 echo "";
@@ -449,7 +460,7 @@ sleep 1;
             ;;
         # Fin de la modification.
         esac
-        
+
 ######
 
         # Appliquer la modification de CHMOD pour le CMS identifié :
@@ -462,9 +473,9 @@ sleep 1;
                 echo "##############################################################";
                 sleep 1;
                 echo "# Appliquer le CHMOD recommandé au fichier configuration.php #"
-                sleep 2;
+                sleep 1;
                 echo "##############################################################";
-                sleep 2;
+                sleep 1;
                 echo "";
                 echo "Utiliser 640 est cohérent, 440 ou 400 permet une sécurité plus poussée.";
                 echo "";
@@ -555,9 +566,9 @@ sleep 1;
                 echo "##############################################################";
                 sleep 1;
                 echo "# Appliquer le CHMOD recommandé au fichier LocalSettings.php #"
-                sleep 2;
+                sleep 1;
                 echo "##############################################################";
-                sleep 2;
+                sleep 1;
                 echo "";
                 echo "Utiliser 640 est cohérent.";
                 echo "Utiliser 440 ou 400 permet une sécurité plus poussée.";
@@ -636,9 +647,9 @@ sleep 1;
             ;;
         # Fin de la modification.
         esac
-        
+
 ######
-        
+
         # Appliquer la modification de CHMOD pour le CMS identifié :
         case $cms in
             "1" | "j" | "J" | "2" | "m" | "M" | "3" | "w" | "W")
@@ -649,9 +660,9 @@ sleep 1;
                 echo "####################################################";
                 sleep 1;
                 echo "# Appliquer le CHMOD recommandé aux fichiers index #"
-                sleep 2;
+                sleep 1;
                 echo "####################################################";
-                sleep 2;
+                sleep 1;
                 echo "";
                 echo "Les fichiers index qui seront modifiés : index.php index.htm index.html.";
                 echo "Utiliser 644 est cohérent.";
@@ -710,9 +721,9 @@ sleep 1;
             ;;
         # Fin de la modification.
         esac
-        
+
 ######
-        
+
         # Appliquer la modification de CHMOD pour le CMS identifié :
         case $cms in
             "1" | "j" | "J" | "2" | "m" | "M" | "3" | "w" | "W")
@@ -723,9 +734,9 @@ sleep 1;
                 echo "########################################################";
                 sleep 1;
                 echo "# Appliquer le CHMOD recommandé aux fichiers .htaccess #"
-                sleep 2;
+                sleep 1;
                 echo "########################################################";
-                sleep 2;
+                sleep 1;
                 echo "";
                 echo "Le CHMOD des fichiers .htaccess et .htaccess* sera modifié.";
                 echo "Le CHMOD des fichiers .htpasswd et .htpasswd* sera également modifié.";
@@ -786,13 +797,13 @@ sleep 1;
             ;;
         # Fin de la modification.
         esac
-        
+
 ######
 
         # ######
 
         # Ajouter une modification de CHMOD :
-        
+
         # Appliquer la modification de CHMOD pour le CMS identifié :
         # case $cms in
         #    "1" | "j" | "J" | "3" | "w" | "W")
@@ -800,21 +811,21 @@ sleep 1;
 
                 # Appliquer les droits par défaut aux dossiers et aux fichiers :
                 # clear
-                #echo "###################################################################";
-                #sleep 1;
-                #echo -n "#  Les valeurs recommandées du CHMOD seront appliqués par défaut  #"
-                #echo "";
-                #sleep 2;
-                #echo "# Il est conseillé d'utiliser le CHMOD 755 pour tous les dossiers #"
-                #sleep 2;
-                #echo "# Il est conseillé d'utiliser le CHMOD 644 pour tous les fichiers #";
-                #sleep 2;
-                #echo "###################################################################";
-                #sleep 2;
-                #echo "";
-                #echo "Appuyer sur 'O' ou 'o' pour continuer.";
-                #echo "Toute autre touche ignore cette étape pour passer à l'étape suivante.";
-                #read answer
+                # echo "###################################################################";
+                # sleep 1;
+                # echo "#  Les valeurs recommandées du CHMOD seront appliqués par défaut  #"
+                # echo "";
+                # sleep 1;
+                # echo "# Il est conseillé d'utiliser le CHMOD 755 pour tous les dossiers #"
+                # sleep 1;
+                # echo "# Il est conseillé d'utiliser le CHMOD 644 pour tous les fichiers #";
+                # sleep 2;
+                # echo "###################################################################";
+                # sleep 2;
+                # echo "";
+                # echo "Appuyer sur 'O' ou 'o' pour continuer.";
+                # echo "Toute autre touche ignore cette étape pour passer à l'étape suivante.";
+                # read answer
                 #    if [ "$answer" != "${answer#[Oo]}" ];
                 #    then
                 #        echo "";
@@ -825,8 +836,8 @@ sleep 1;
                 #        echo "";
                 #        echo "Le CHMOD des dossiers et des fichiers n'a pas été modifié.";
                 #    fi
-                #sleep 1;
-                #echo "";
+                # sleep 1;
+                # echo "";
 
         # Fin du choix de CMS :
         #   ;;
@@ -851,6 +862,14 @@ sleep 1;
         sleep 1;
         echo "Vous avez décidé de ne pas procéder au changement des droits CHMOD.";
         echo "Le programme a été arrêté sans avoir effectué de modifications.";
+        echo "                _______  _        ______";
+        echo "               (  ____ \( (    /|(  __  \\"; 
+        echo "               | (    \/|  \  ( || (  \  )";
+        echo "               | (__    |   \ | || |   ) |";
+        echo "               |  __)   | (\ \) || |   | |";
+        echo "               | (      | | \   || |   ) |";
+        echo "               | (____/\| )  \  || (__/  )";
+        echo "               (_______/|/    )_)(______/";               
         exit;
     fi
 
