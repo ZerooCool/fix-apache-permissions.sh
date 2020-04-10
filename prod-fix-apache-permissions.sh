@@ -16,41 +16,49 @@ echo "#                 Développé sous Debian - Ubuntu                 #";
 sleep 1;
 echo "##################################################################";
 sleep 2;
-echo "";
-clear;
-echo "#########################################################";
-sleep 1;
-echo "# Saisir le chemin complet du dossier contenant le site #";
-sleep 1;
-echo "#########################################################";
-sleep 1;
-echo "";
-echo "Exemple pour un chemin absolu :";
-echo "Le script est placé quelque part sur la machine ?";
-echo "/var/www/dossier_du_site_pour_lequel_verifier_les_permissions/";
-echo "";
-echo "Exemple pour un chemin relatif :";
-echo "Le script est placé dans le répertoire /var/www/ ?";
-echo "./dossier_du_site_pour_lequel_verifier_les_permissions/";
-sleep 2;
-echo "";
-echo "À votre tour :";
-read -r chemin_site;
-sleep 2;
-echo "";
-    if test -z "$chemin_site"
-    then
-        echo "Erreur ! Le programme a été arrêté.";
-        echo "Le chemin du site n'a pas été renseigné.";
-        echo "Relancer le programme avec un emplacement valide pour le site a configurer.";
-        sleep 4;
-        exit;
-    else
-        echo "Le dossier renseigné comme contenant le site est le suivant :";
-        echo "$chemin_site";
-    fi
-sleep 2;
-echo "";
+if [ $# -eq 0 ] ;
+then
+    clear;
+    echo "#########################################################";
+    sleep 1;
+    echo "# Saisir le chemin complet du dossier contenant le site #";
+    sleep 1;
+    echo "#########################################################";
+    sleep 1;
+    echo "";
+    echo "Exemple avec un chemin absolu :";
+    echo "Le script est placé quelque part sur la machine ?";
+    echo "Saisir l'adresse complète du site pour lequel vérifier les permissions :";
+    echo "/var/www/dossier_du_site_pour_lequel_verifier_les_permissions";
+    echo "";
+    echo "Exemple avec un chemin relatif :";
+    echo "Le script est placé dans le dossier parent ?";
+    echo "Saisir l'adresse relative du site pour lequel vérifier les permissions :";
+    echo "./dossier_du_site_pour_lequel_verifier_les_permissions";
+    sleep 2;
+    echo "";
+    echo "Saisir maintenant le dossier du site à sécuriser :";
+    read -r chemin_site;
+    sleep 2;
+    echo "";
+        if test -z "$chemin_site"
+        then
+            echo "Erreur ! Le programme a été arrêté.";
+            echo "Le chemin du site n'a pas été renseigné.";
+            echo "Relancer le programme avec un emplacement valide pour le site a configurer.";
+            sleep 4;
+            exit;
+        else
+            echo "Le dossier renseigné comme contenant le site est le suivant :";
+            echo "$chemin_site";
+            sleep 2;
+        fi
+else
+    chemin_site="$1";
+    echo "Le dossier renseigné en paramètre comme contenant le site est le suivant :";
+    echo "$chemin_site";
+    sleep 2;
+fi
 clear;
 if [ -d "$chemin_site" ];
 then
@@ -59,6 +67,7 @@ then
         echo "Positionnement dans le dossier du site réussi.";
         sleep 2;
         echo "Les CHMOD des dossiers et fichiers seront modifiés dans le site suivant :";
+        sleep 2;
         pwd;
         sleep 2;
     else
@@ -184,7 +193,6 @@ sleep 1;
                             chemin_du_site() {
                                 pwd;
                             }
-                        
                         WP_OWNER="$wpowner";
                         WP_GROUP="$wpgroup";
                         WP_ROOT="$(chemin_du_site)";
@@ -591,13 +599,14 @@ sleep 1;
         sleep 1;
         echo "Vous avez décidé de ne pas procéder au changement des droits CHMOD.";
         echo "Le programme a été arrêté sans avoir effectué de modifications.";
-        echo "                _______  _        ______";
-        echo "               (  ____ \( (    /|(  __  \\"; 
-        echo "               | (    \/|  \  ( || (  \  )";
-        echo "               | (__    |   \ | || |   ) |";
-        echo "               |  __)   | (\ \) || |   | |";
-        echo "               | (      | | \   || |   ) |";
-        echo "               | (____/\| )  \  || (__/  )";
-        echo "               (_______/|/    )_)(______/";               
+        echo "                     _______  _        ______";
+        echo "                    (  ____ \( (    /|(  __  \\";
+        echo "                    | (    \/|  \  ( || (  \  )";
+        echo "                    | (__    |   \ | || |   ) |";
+        echo "                    |  __)   | (\ \) || |   | |";
+        echo "                    | (      | | \   || |   ) |";
+        echo "                    | (____/\| )  \  || (__/  )";
+        echo "                    (_______/|/    )_)(______/";
+        echo "";
         exit;
     fi

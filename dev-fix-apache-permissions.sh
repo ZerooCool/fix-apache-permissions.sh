@@ -5,6 +5,16 @@
 #                           Développé sous Debian - Ubuntu                            #
 #######################################################################################
 
+###############################
+# Notice pour la maintenance. #
+###############################
+# Chaque vidage d'écran doit être commenté :
+# L'écran existant est vidé.
+# clear;
+#
+# Chaque message en erreur doit prendre un sleep de 4 secondes.
+# sleep 4;
+
 # L'écran existant est vidé.
 clear;
 echo "##################################################################";
@@ -17,60 +27,65 @@ echo "#                 Développé sous Debian - Ubuntu                 #";
 sleep 1;
 echo "##################################################################";
 sleep 2;
-echo "";
 
 
-# A faire :
-# Récupérer la variable de l'emplacement du site donné en paramètre
-# sudo sh fix-apache-permissions.sh /var/www/dossier_du_site_pour_lequel_verifier_les_permissions/
+# Récupérer la variable donnée en paramètre pour l'emplacement du site.
+# sudo sh prod-fix-apache-permissions.sh /var/www/dossier_du_site_pour_lequel_verifier_les_permissions/
+# Si aucun paramètre n'est renseigné au lancement du script, renseigner le paramètre manuellement.
+if [ $# -eq 0 ] ;
+then
+    # L'écran existant est vidé.
+    clear;
+    echo "#########################################################";
+    sleep 1;
+    echo "# Saisir le chemin complet du dossier contenant le site #";
+    sleep 1;
+    echo "#########################################################";
+    sleep 1;
+    echo "";
+    echo "Exemple avec un chemin absolu :";
+    echo "Le script est placé quelque part sur la machine ?";
+    echo "Saisir l'adresse complète du site pour lequel vérifier les permissions :";
+    echo "/var/www/dossier_du_site_pour_lequel_verifier_les_permissions";
+    echo "";
+    echo "Exemple avec un chemin relatif :";
+    echo "Le script est placé dans le dossier parent ?";
+    echo "Saisir l'adresse relative du site pour lequel vérifier les permissions :";
+    echo "./dossier_du_site_pour_lequel_verifier_les_permissions";
+    sleep 2;
+    echo "";
+    echo "Saisir maintenant le dossier du site à sécuriser :";
+    read -r chemin_site;
+    sleep 2;
+    echo "";
+
+        # Affichage de la variable chemin_site :
+        if test -z "$chemin_site"
+        then
+            echo "Erreur ! Le programme a été arrêté.";
+            echo "Le chemin du site n'a pas été renseigné.";
+            echo "Relancer le programme avec un emplacement valide pour le site a configurer.";
+            sleep 4;
+            exit;
+        else
+            echo "Le dossier renseigné comme contenant le site est le suivant :";
+            echo "$chemin_site";
+            sleep 2;
+        fi
+
+# Si un paramètre est renseigné au lancement du script, la valeur de la variable chemin_site est attribuée.
+else
+    chemin_site="$1";
+    echo "Le dossier renseigné en paramètre comme contenant le site est le suivant :";
+    echo "$chemin_site";
+    sleep 2;
+fi
 
 
 # L'écran existant est vidé.
 clear;
-echo "#########################################################";
-sleep 1;
-echo "# Saisir le chemin complet du dossier contenant le site #";
-sleep 1;
-echo "#########################################################";
-sleep 1;
-echo "";
-echo "Exemple pour un chemin absolu :";
-echo "Le script est placé quelque part sur la machine ?";
-echo "/var/www/dossier_du_site_pour_lequel_verifier_les_permissions/";
-echo "";
-echo "Exemple pour un chemin relatif :";
-echo "Le script est placé dans le répertoire /var/www/ ?";
-echo "./dossier_du_site_pour_lequel_verifier_les_permissions/";
-sleep 2;
-echo "";
-echo "À votre tour :";
-read -r chemin_site;
-sleep 2;
-echo "";
-    # Affichage de la variable chemin_site :
-    if test -z "$chemin_site"
-    then
-        echo "Erreur ! Le programme a été arrêté.";
-        echo "Le chemin du site n'a pas été renseigné.";
-        echo "Relancer le programme avec un emplacement valide pour le site a configurer.";
-        sleep 4;
-        exit;
-    else
-        echo "Le dossier renseigné comme contenant le site est le suivant :";
-        echo "$chemin_site";
-
-    fi
-sleep 2;
-echo "";
-
-
-# L'écran existant est vidé.
-clear;
-# Vérifier si le dossier du site existe.
-# Cette vérification n'est pas affichée car le sleep est commenté.
 # Si le dossier existe, on se positionne à l'intérieur.
 # Si le dossier n'existe pas, une erreur arrête le programme.
-# On passe à la prochaine étape, pour confirmer la poursuite du programme.
 if [ -d "$chemin_site" ];
 then
 
@@ -78,14 +93,19 @@ then
     # cd "$chemin_site" || "exit;";
     # SC2164 : https://github.com/koalaman/shellcheck/wiki/SC2164
     # L'alternative est d'utiliser un test conditionnel pour afficher un message d'erreur.
-    # Normalement je n'ai pas besoin d'afficher de message d'erreur, puis le test de l'existance du dossier du site a déjà été réalisé précédemment.
     if cd "$chemin_site";
     then
-        echo "Positionnement dans le dossier du site réussi.";
-        sleep 2;
-        echo "Les CHMOD des dossiers et fichiers seront modifiés dans le site suivant :";
-        pwd;
-        sleep 2;
+        # Inutile d'afficher que le positionnement est réussi, puisque l'étape d'après va confirmer le chemin du site.
+        # De plus, le test de positionnement a déjà réussi si on passe cette étape, donc, le positionnement est réussi.
+        #
+        # echo "Positionnement dans le dossier du site réussi.";
+        # sleep 2;
+        # echo "Les CHMOD des dossiers et fichiers seront modifiés dans le site suivant :";
+        # sleep 2;
+        # pwd;
+        # sleep 2;
+    # Normalement afficher ce message d'erreur est inutile puisque le test de l'existance du dossier du site a déjà été réalisé précédemment.
+    # Je conserve cette arrêt du programme et ce message d'erreur qui pourrait peut être subvenir si les droits d'accès ne sont pas suffisants.
     else
         echo "Erreur ! Le programme a été arrêté.";
         echo "Le positionnement dans le dossier du site $chemin_site a échoué.";
@@ -94,7 +114,7 @@ then
         exit;
     fi
 
-# Empêche d'afficher l'erreur de ce type quand le dossier n'existe pas : chmod.sh: 81: cd: can't cd to ko/
+# Arrêter le programme permet de ne pas avoir une erreur de ce type quand le dossier n'existe pas : chmod.sh: 81: cd: can't cd to ko/
 else
     echo "Erreur ! Le programme a été arrêté.";
     echo "Le dossier du site $chemin_site n'existe pas.";
@@ -862,14 +882,15 @@ sleep 1;
         sleep 1;
         echo "Vous avez décidé de ne pas procéder au changement des droits CHMOD.";
         echo "Le programme a été arrêté sans avoir effectué de modifications.";
-        echo "                _______  _        ______";
-        echo "               (  ____ \( (    /|(  __  \\"; 
-        echo "               | (    \/|  \  ( || (  \  )";
-        echo "               | (__    |   \ | || |   ) |";
-        echo "               |  __)   | (\ \) || |   | |";
-        echo "               | (      | | \   || |   ) |";
-        echo "               | (____/\| )  \  || (__/  )";
-        echo "               (_______/|/    )_)(______/";               
+        echo "                     _______  _        ______";
+        echo "                    (  ____ \( (    /|(  __  \\";
+        echo "                    | (    \/|  \  ( || (  \  )";
+        echo "                    | (__    |   \ | || |   ) |";
+        echo "                    |  __)   | (\ \) || |   | |";
+        echo "                    | (      | | \   || |   ) |";
+        echo "                    | (____/\| )  \  || (__/  )";
+        echo "                    (_______/|/    )_)(______/";
+        echo "";
         exit;
     fi
 

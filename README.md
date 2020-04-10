@@ -6,7 +6,15 @@
 #######################################################################################
 ```
 ```
-# This script fix-apache-permissions.sh can fix Apache permissions CHOWN and CHMOD for Files and Folder from a website Joomla Mediawiki Wordpress and other CMS using HTML and PHP files.
+# Le script prod-fix-apache-permissions.sh modifie les permissions de Apache avec CHOWN et CHMOD.
+# Le script a été optimisé pour les fichiers et dossiers des CMS Joomla Mediawiki WordPress.
+```
+```
+# Le script fonctionne également pour d'autres CMS qui utiliseraient HTML et PHP.
+# Pour modifier les permissions d'un autre CMS, utiliser le choix WordPress.
+# Lire les actions proposées par le script, et, adapter vos réponses.
+# Le script ne devrait pas créer d'effets de bords indésirables.
+# Un message d'erreur indiquera si l'action est impossible.
 ```
 
 ```
@@ -51,8 +59,14 @@
 # Copier le répertoire "site" qui va servir de site de test.
 # https://github.com/ZerooCool/fix-apache-permissions.sh/tree/master/site
 ```
+```
 # Lancer le script puis suivre les étapes proposées :
+# Le script demandera de renseigner le dossier à sécuriser.
 sudo sh dev-fix-apache-permissions.sh
+# Ou :
+# Préciser le dossier à sécuriser dès le lancement en ajoutant un paramètre au script.
+sudo sh dev-fix-apache-permissions.sh ./site
+sudo sh dev-fix-apache-permissions.sh /var/www/dossier_du_site_pour_lequel_verifier_les_permissions
 ```
 
 ```
@@ -66,7 +80,7 @@ sudo sh dev-fix-apache-permissions.sh
 sed '/^#/d;/    # /d;/    ##/d;/^$/d' dev-fix-apache-permissions.sh > prod-fix-apache-permissions.sh
 ```
 ```
-# L'entête sera rajouté :
+# L'entête est rajouté :
 sed -i.old -e "1i\\#\!\/bin\/sh" prod-fix-apache-permissions.sh
 sed -i.old -e "2i\\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#" prod-fix-apache-permissions.sh
 sed -i.old -e "3i\\# Ce programme modifie les droits CHOWN et CHMOD sur un site web hébergé sous Apache2 \#" prod-fix-apache-permissions.sh
@@ -90,5 +104,10 @@ sed -i.old -e "7i\ " prod-fix-apache-permissions.sh
 ```
 ```
 # Lancer le script puis suivre les étapes proposées :
+# Le script demandera de renseigner le dossier à sécuriser.
 sudo sh prod-fix-apache-permissions.sh
+# Ou :
+# Préciser le dossier à sécuriser dès le lancement en ajoutant un paramètre au script.
+sudo sh prod-fix-apache-permissions.sh ./site
+sudo sh prod-fix-apache-permissions.sh /var/www/dossier_du_site_pour_lequel_verifier_les_permissions
 ```
