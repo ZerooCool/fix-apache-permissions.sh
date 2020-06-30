@@ -54,7 +54,7 @@ then
     echo "./dossier_du_site_pour_lequel_verifier_les_permissions";
     sleep 2;
     echo "";
-    echo "Saisir maintenant le dossier du site à sécuriser :";
+    echo "Saisir maintenant l'adresse du dossier contenant le site à sécuriser :";
     read -r chemin_site;
     sleep 2;
     echo "";
@@ -68,7 +68,7 @@ then
             sleep 4;
             exit;
         else
-            echo "Le dossier renseigné comme contenant le site est le suivant :";
+            echo "L'adresse qui a été saisie pour le dossier contenant le site à sécuriser :";
             echo "$chemin_site";
             sleep 2;
         fi
@@ -104,12 +104,16 @@ then
         # sleep 2;
         # pwd;
         # sleep 2;
+
+        # Si je commente justement ce code de vérification, cela entraîne une erreur du else suivant.
+        # Je suis obligé de placé au minimum un echo vide.
+        echo "";
     # Normalement afficher ce message d'erreur est inutile puisque le test de l'existance du dossier du site a déjà été réalisé précédemment.
     # Je conserve cette arrêt du programme et ce message d'erreur qui pourrait peut être subvenir si les droits d'accès ne sont pas suffisants.
     else
         echo "Erreur ! Le programme a été arrêté.";
         echo "Le positionnement dans le dossier du site $chemin_site a échoué.";
-        echo "Relancer le programme avec l'emplacement valide du site a configurer.";
+        echo "Relancer le programme avec un emplacement valide pour le site a configurer.";
         sleep 4;
         exit;
     fi
@@ -118,7 +122,7 @@ then
 else
     echo "Erreur ! Le programme a été arrêté.";
     echo "Le dossier du site $chemin_site n'existe pas.";
-    echo "Relancer le programme avec l'emplacement valide du site a configurer.";
+    echo "Relancer le programme avec un emplacement valide pour le site a configurer.";
     sleep 4;
     exit;
 fi
@@ -223,8 +227,7 @@ sleep 1;
                 echo "Vous avez décidé de ne pas procéder au changement des droits CHMOD.";
                 echo "Le programme a été arrêté sans avoir effectué de modifications.";
                 exit;
-
-            # Fin du choix d'arrêt du programme ;;
+            # Fin du choix pour l'arrêt du programme ;;
             ;;
         esac
 
@@ -234,7 +237,7 @@ sleep 1;
 # Les étapes entre ###### sont effectuées à la suite l'une de l'autre.
 
 # Le choix du CMS a configurer a été effectué précédemment.
-# Le test conditionnel détermine si la configuration doit être effectuée.
+# Le test conditionnel détermine si la configuration doit être effectuée pour un CMS en particulier.
 # "1" | "j" | "J" | "2" | "m" | "M" | "3" | "w" | "W")
 
 ######
@@ -253,39 +256,51 @@ sleep 1;
                 echo "######################################################";
                 sleep 1;
                 echo "";
-                echo "Il est important de donner les fichiers au bon propriétaire et groupe.";
+                echo "Les fichiers et dossiers doivent appartenir au bon propriétaire et groupe.";
                 sleep 2
                 echo "";
-                echo "Appuyer sur 'o' pour sélectionner le CHOWN a appliquer.";
+                echo "Appuyer sur 'o' pour indiquer les permissions a appliquer pour CHOWN.";
                 echo "Toute autre touche ignore cette étape pour passer à l'étape suivante.";
                 echo "Aucune modification des droits CHOWN ne sera effectuée !";
                 read -r answer;
                     if [ "$answer" != "${answer#[Oo]}" ];
                     then
 
+                        echo "L'utilisateur faisant actuellement tourner le serveur web :";
+                        ps axo user,group,comm | egrep '(apache|httpd)' | grep -v ^root | uniq | cut -d\  -f 1
                         echo "";
-                        echo "Saisir le propriétaire des fichiers du site sur le serveur.";
-                        echo "On utilisera généralement la valeur 'www-data', sans les simples quotes.";
-                        echo "À votre tour :";
-                        read -r wpowner;
+                        echo "Le groupe faisant actuellement tourner le serveur web :";
+                        ps axo user,group,comm | egrep '(apache|httpd)' | grep -v ^root | uniq | cut -d\  -f 2
+                        sleep 2;
 
                         echo "";
-                        echo "Saisir le groupe utilisateur des fichiers du site sur le serveur.";
-                        echo "On utilisera généralement la valeur 'www-data', sans les simples quotes.";
+                        echo "Saisir l'utilisateur du serveur web :";
+                        echo "On utilise généralement la valeur suivante en développement : www-data";
+                        echo "On utilise généralement la valeur suivante en production : www-data";
                         echo "À votre tour :";
                         read -r wpgroup;
 
                         echo "";
-                        echo "Saisir le groupe du serveur web Apache2.";
-                        echo "On utilisera généralement la valeur 'www-data', sans les simples quotes.";
+                        echo "Saisir le groupe du serveur web :";
+                        echo "On utilise généralement la valeur suivante en développement : www-data";
+                        echo "On utilise généralement la valeur suivante en production : www-data";
                         echo "À votre tour :";
                         read -r wsgroup;
+
+                        echo "";
+                        echo "Saisir le propriétaire des fichiers du site sur le serveur web :";
+                        echo "On utilise généralement la valeur suivante en développement : www-data";
+                        echo "On utilise généralement la valeur suivante en production : root";
+                        echo "On peut également utiliser un autre utilisateur : monuser";
+                        echo "À votre tour :";
+                        read -r wpowner;
 
                         # Afficher le chemin absolu du site :
                             chemin_du_site() {
                                 pwd;
                             }
-                        # echo "La position du site sur le serveur : $(chemin_du_site)";
+                        echo "La position du site : $(chemin_du_site)";
+                        sleep 2;
 
                         # Propriétaire des fichiers WordPress.
                         WP_OWNER="$wpowner";
@@ -298,29 +313,39 @@ sleep 1;
 
                         # Remise à zéro des droits de propriété des fichiers :
                         echo "";
-                        echo "1- Remise à zéro des droits de propriété des fichiers :";
+                        echo "1- Initialiser les droits propriétaire et groupe par défaut :";
                         find ${WP_ROOT} -exec chown ${WP_OWNER}:${WP_GROUP} {} \;
-                        echo "OK.";
-                        echo "Il faudra encore ajouter un test pour vérifier si la requête est réalisée !";
+                        echo "Les droits propriétaire et groupe ont été appliqués.";
+                        #
+                        echo "Il manque un test pour vérifier si la requête est réalisée !";
+                        echo "... Les droits propriétaire et groupe ont été appliqués ...";
+                        #
+                        echo "find ${WP_ROOT} -exec chown ${WP_OWNER}:${WP_GROUP} {} \\\;";
                         echo "Vérifier l'existance du dossier, ou, que le script a été lancé avec sudo !";
+                        sleep 2;
 
                         # Autoriser WordPress a modifier wp-config.php :
                         echo "";
                         echo "2- Autoriser WordPress a modifier wp-config.php :";
                         chgrp ${WS_GROUP} ${WP_ROOT}/wp-config.php \;
                         # J'ai une erreur sur le chgrp lorsque je lance la configuration sur /var/www/lecannabiste.it A VERIFIER !!! !!!
-                        echo "Il faudra encore ajouter un test pour vérifier si la requête est réalisée !";
+                        echo "Il manque un test pour vérifier si la requête est réalisée !";
+                        echo "... Les droits propriétaire et groupe ont été appliqués ...";
+                        #
+                        echo "chgrp ${WS_GROUP} ${WP_ROOT}/wp-config.php \\\;";
                         echo "Vérifier l'existance du dossier, ou, que le script a été lancé avec sudo !";
-
+                        sleep 2;
+                        
                         # Autoriser WordPress a modifier wp-content :
                         echo "";
                         echo "3- Autoriser WordPress a modifier wp-content :";
                         find ${WP_ROOT}/wp-content -exec chgrp ${WS_GROUP} {} \;
                         # J'ai une erreur sur le chgrp lorsque je lance la configuration sur /var/www/lecannabiste.it A VERIFIER !!! !!!
-                        echo "Il faudra encore ajouter un test pour vérifier si la requête est réalisée !";
+                        echo "Il manque un test pour vérifier si la requête est réalisée !";
+                        echo "... Les droits propriétaire et groupe ont été appliqués ...";
+                        #
+                        echo "find ${WP_ROOT}/wp-content -exec chgrp ${WS_GROUP} {} \\\;";
                         echo "Vérifier l'existance du dossier, ou, que le script a été lancé avec sudo !";
-
-                        echo "Les droits propriétaire et groupe ont été appliqués.";
                         sleep 2;
                     else
                         echo "";
@@ -330,20 +355,27 @@ sleep 1;
                 sleep 2;
                 echo "";
 
-
-            # Fin du choix de CMS.
+            # Fin de la lecture du choix de CMS pour le test devant être appliqué.
             ;;
         # Fin de la modification.
         esac
 
 ######
 
-        # Ajouter un changement de propriétaire pour le dossier .git et le fichier .gitignore
+# Changer le propriétaire pour le dossier .git et le fichier .gitignore
 
-        # Je relance la question sur les droits @Tchoupinax , tu me disais, Les fichiers gits appartient à celui qui les a CLONÉ.
-# Mais, en l’occurrence, lorsque je clone le projet Git dans /var/www/ il me faut les droits sudo pour y écrire, donc, à qui appartient le dossier .git ?
-# A mon utilisateur monuser:monuser ou root:root
-# Ha bah non, je me répond, si je ne dis pas de bêtise, je dois faire un chown monuser:monuser et la, je peux lancer les commit, sans avoir besoin de sudo, et, je m'identifie avec mon compte utilisateur créé sur Gitea.
+# Donner les dossiers et fichiers git au simple utilisateur utilisé sur le système ayant le droit d'effectuer un commit git.
+# sudo chown -R user:user .git/
+# sudo chown user:user .gitignore
+
+# Depuis le répertoire contenant le site :
+# Dossier .git/ en 700
+# Fichiers .git/ en 600
+# find ./.git/ -type d -exec chmod 700 {} \;
+# find ./.git/ -type f -exec chmod 600 {} \;
+
+# Fichier .gitignore en 600
+# chmod 600 .gitignore
 
 ######
 
@@ -383,7 +415,7 @@ sleep 1;
                 sleep 2;
                 echo "";
 
-            # Fin du choix de CMS.
+            # Fin de la lecture du choix de CMS pour le test devant être appliqué.
             ;;
         # Fin de la modification.
         esac
@@ -476,7 +508,7 @@ sleep 1;
                 sleep 2;
                 echo "";
 
-            # Fin du choix de CMS.
+            # Fin de la lecture du choix de CMS pour le test devant être appliqué.
             ;;
         # Fin de la modification.
         esac
@@ -569,7 +601,7 @@ sleep 1;
                 sleep 2;
                 echo "";
 
-            # Fin du choix de CMS.
+            # Fin de la lecture du choix de CMS pour le test devant être appliqué.
             ;;
         # Fin de la modification.
         esac
@@ -663,7 +695,7 @@ sleep 1;
                 sleep 2;
                 echo "";
 
-            # Fin du choix de CMS.
+            # Fin de la lecture du choix de CMS pour le test devant être appliqué.
             ;;
         # Fin de la modification.
         esac
@@ -737,7 +769,7 @@ sleep 1;
                 sleep 2;
                 echo "";
 
-            # Fin du choix de CMS.
+            # Fin de la lecture du choix de CMS pour le test devant être appliqué.
             ;;
         # Fin de la modification.
         esac
@@ -813,7 +845,7 @@ sleep 1;
                 sleep 2;
                 echo "";
 
-            # Fin du choix de CMS.
+            # Fin de la lecture du choix de CMS pour le test devant être appliqué.
             ;;
         # Fin de la modification.
         esac
@@ -859,8 +891,8 @@ sleep 1;
                 # sleep 1;
                 # echo "";
 
-        # Fin du choix de CMS :
-        #   ;;
+            # Fin du choix de CMS :
+            # ;;
         # Fin de la modification :
         # esac
 
@@ -880,8 +912,9 @@ sleep 1;
         sleep 1;
         echo "";
         sleep 1;
-        echo "Vous avez décidé de ne pas procéder au changement des droits CHMOD.";
+        echo "Vous avez décidé d'arrêter ce programme.";
         echo "Le programme a été arrêté sans avoir effectué de modifications.";
+        echo "";
         echo "                     _______  _        ______";
         echo "                    (  ____ \( (    /|(  __  \\";
         echo "                    | (    \/|  \  ( || (  \  )";

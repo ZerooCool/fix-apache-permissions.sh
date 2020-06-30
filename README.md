@@ -29,9 +29,21 @@
 ```
 
 ```
-##########################################
-# Ce script permet d'optimiser les CHMOD #
-##########################################
+#################################################
+# Ce script permet d'optimiser les droits CHOWN #
+#################################################
+```
+```
+### Configuration des droits CHOWN
+# Proposition d'utiliser les permissions par défaut www-data:www-data en développement.
+# Proposition d'utiliser les permissions par défaut root:www-data en production.
+
+```
+
+```
+#################################################
+# Ce script permet d'optimiser les droits CHMOD #
+#################################################
 ```
 ```
 ### Tests communs pour tous les CMS :
