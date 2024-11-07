@@ -6,9 +6,10 @@
 # Ce script donne les fichiers sensibles de WordPress à l'utilisateur root :
 https://gist.github.com/Adirael/3383404
 
-Look :
+# Voir :
 chmod +x fix-wordpress-permissions.sh (gives execute permissions)
-sudo sh ./fix-wordpress-permissions.sh /home/admin/web/yourwebsite-goes-here/public_html (use this command to execute).
+# Use this command to execute :
+sudo sh ./fix-wordpress-permissions.sh /home/admin/web/yourwebsite-goes-here/public_html
 
 
 ###########################################
