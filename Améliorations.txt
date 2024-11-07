@@ -15,7 +15,7 @@ sudo sh ./fix-wordpress-permissions.sh /home/admin/web/yourwebsite-goes-here/pub
 ###########################################
 # Plus rapide a utiliser :
 chown -R ${WP_OWNER}:${WP_GROUP} ${WP_ROOT}
-# instead of
+# Au lieu de :
 find ${WP_ROOT} -exec chown ${WP_OWNER}:${WP_GROUP} {} \;
 
 
