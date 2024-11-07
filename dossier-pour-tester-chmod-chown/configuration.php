@@ -1,1 +1,1 @@
-Test.
+Test : configuration.php
